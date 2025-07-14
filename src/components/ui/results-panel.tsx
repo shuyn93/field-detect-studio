@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from './card';
 import { Badge } from './badge';
 import { MetricsPanel } from './metrics-panel';
 import { cn } from '@/lib/utils';
-import footballIcon from '@/assets/football-artistic.png';
+
 
 export interface DetectionResult {
   id: string;
@@ -115,9 +115,9 @@ export const ResultsPanel: React.FC<ResultsPanelProps> = ({
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <img 
-                  src={footballIcon} 
+                  src="/football-artistic.png" 
                   alt="Football" 
-                  className="w-8 h-8 object-contain"
+                  className="w-8 h-8 object-contain filter drop-shadow-md"
                 />
                 <CardTitle className="text-xl">Kết quả nhận diện</CardTitle>
               </div>
@@ -201,9 +201,9 @@ export const ResultsPanel: React.FC<ResultsPanelProps> = ({
             <div className="space-y-4">
               <h4 className="font-semibold text-foreground flex items-center gap-2">
                 <img 
-                  src={footballIcon} 
+                  src="/football-artistic.png" 
                   alt="Football" 
-                  className="w-5 h-5 object-contain"
+                  className="w-5 h-5 object-contain filter drop-shadow-sm"
                 />
                 Chi tiết nhận diện
               </h4>
