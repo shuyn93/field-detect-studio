@@ -150,7 +150,7 @@ const Index = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Left Column - Upload & Results */}
-          <div className="lg:col-span-3 space-y-6">
+          <div className="lg:col-span-4 space-y-6">
             {/* Upload Section */}
             <Card className="shadow-card">
               <CardContent className="p-6">
@@ -201,15 +201,15 @@ const Index = () => {
               result={currentResult}
               isProcessing={isProcessing}
               onDownload={handleDownload}
-              className="shadow-card"
+              className="shadow-field"
             />
           </div>
 
-          {/* Right Column - Evaluation Sidebar */}
-          <div className="lg:col-span-1">
+          {/* Evaluation Sidebar - moved to bottom on mobile */}
+          <div className="lg:col-span-4">
             <EvaluationSidebar
               onSubmitEvaluation={handleEvaluation}
-              className="sticky top-4 shadow-card"
+              className="shadow-field"
             />
           </div>
         </div>

@@ -15,18 +15,18 @@
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
 
-    /* AI Sports Theme - Gradient from field green to tech blue */
-    --primary: 142 76% 36%;
+    /* AI Sports Theme - Enhanced Green Focus */
+    --primary: 142 76% 40%;
     --primary-foreground: 0 0% 98%;
-    --primary-glow: 142 86% 50%;
+    --primary-glow: 142 90% 55%;
 
-    --secondary: 217 91% 60%;
+    --secondary: 142 65% 45%;
     --secondary-foreground: 0 0% 98%;
 
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
+    --muted: 142 15% 15%;
+    --muted-foreground: 142 20% 65%;
 
-    --accent: 142 76% 36%;
+    --accent: 142 85% 50%;
     --accent-foreground: 0 0% 98%;
 
     --destructive: 0 84.2% 60.2%;
@@ -36,15 +36,17 @@
     --input: 240 3.7% 15.9%;
     --ring: 142 76% 36%;
 
-    /* AI Sports Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(142 76% 36%), hsl(217 91% 60%));
-    --gradient-secondary: linear-gradient(180deg, hsl(240 10% 3.9%), hsl(240 5% 6%));
-    --gradient-accent: linear-gradient(45deg, hsl(142 86% 50%), hsl(217 91% 70%));
+    /* AI Sports Gradients - Enhanced Green */
+    --gradient-primary: linear-gradient(135deg, hsl(142 76% 40%), hsl(142 85% 50%));
+    --gradient-secondary: linear-gradient(180deg, hsl(142 15% 8%), hsl(142 10% 6%));
+    --gradient-accent: linear-gradient(45deg, hsl(142 90% 55%), hsl(142 70% 60%));
+    --gradient-field: linear-gradient(135deg, hsl(142 90% 45%), hsl(142 70% 55%));
     
-    /* Elegant Shadows */
-    --shadow-elegant: 0 10px 30px -10px hsl(142 76% 36% / 0.3);
-    --shadow-glow: 0 0 40px hsl(142 86% 50% / 0.4);
-    --shadow-card: 0 4px 20px -4px hsl(240 10% 3.9% / 0.8);
+    /* Elegant Shadows - Enhanced Green */
+    --shadow-elegant: 0 10px 30px -10px hsl(142 76% 40% / 0.4);
+    --shadow-glow: 0 0 40px hsl(142 90% 55% / 0.5);
+    --shadow-card: 0 4px 20px -4px hsl(142 15% 8% / 0.8);
+    --shadow-field: 0 8px 25px -8px hsl(142 90% 45% / 0.3);
 
     /* Animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);

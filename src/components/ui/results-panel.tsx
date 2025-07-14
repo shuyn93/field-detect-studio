@@ -3,7 +3,9 @@ import { Download, Eye, Play, Pause } from 'lucide-react';
 import { Button } from './button';
 import { Card, CardContent, CardHeader, CardTitle } from './card';
 import { Badge } from './badge';
+import { MetricsPanel } from './metrics-panel';
 import { cn } from '@/lib/utils';
+import footballIcon from '@/assets/football-artistic.png';
 
 export interface DetectionResult {
   id: string;
@@ -99,133 +101,173 @@ export const ResultsPanel: React.FC<ResultsPanelProps> = ({
   const playerDetections = result.detections.filter(d => d.type === 'player');
   const ballDetections = result.detections.filter(d => d.type === 'ball');
 
+  // Calculate metrics
+  const avgConfidence = result.detections.reduce((sum, d) => sum + d.confidence, 0) / result.detections.length;
+  const mockMap50Pose = 0.85 + (Math.random() * 0.10); // Mock data
+  const mockMap50Box = 0.82 + (Math.random() * 0.12); // Mock data
+
   return (
-    <Card className={cn("w-full", className)}>
-      <CardHeader className="pb-4">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-xl">Kết quả nhận diện</CardTitle>
-          <Button
-            onClick={onDownload}
-            variant="gradient"
-            size="sm"
-          >
-            <Download className="h-4 w-4 mr-2" />
-            Tải xuống
-          </Button>
-        </div>
-      </CardHeader>
-      
-      <CardContent className="space-y-6">
-        {/* Media Display */}
-        <div className="relative bg-black rounded-lg overflow-hidden shadow-card">
-          {result.isVideo ? (
-            <div className="relative">
-              <video
-                ref={videoRef}
-                src={result.processedUrl}
-                className="w-full h-auto max-h-96 object-contain"
-                controls={false}
-                onPlay={() => setIsPlaying(true)}
-                onPause={() => setIsPlaying(false)}
-              />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <Button
-                  variant="ghost"
-                  size="lg"
-                  className="bg-black/50 hover:bg-black/70 text-white"
-                  onClick={handlePlayPause}
-                >
-                  {isPlaying ? (
-                    <Pause className="h-8 w-8" />
-                  ) : (
-                    <Play className="h-8 w-8" />
-                  )}
-                </Button>
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* Main Results Panel */}
+      <div className="lg:col-span-2">
+        <Card className={cn("w-full", className)}>
+          <CardHeader className="pb-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <img 
+                  src={footballIcon} 
+                  alt="Football" 
+                  className="w-8 h-8 object-contain"
+                />
+                <CardTitle className="text-xl">Kết quả nhận diện</CardTitle>
               </div>
-            </div>
-          ) : (
-            <img
-              src={result.processedUrl}
-              alt="Processed result"
-              className="w-full h-auto max-h-96 object-contain"
-            />
-          )}
-        </div>
-
-        {/* Detection Statistics */}
-        <div className="grid grid-cols-3 gap-4">
-          <div className="text-center space-y-2">
-            <div className="text-2xl font-bold text-primary">
-              {fieldDetections.length}
-            </div>
-            <Badge variant="secondary" className="text-xs">
-              Sân bóng
-            </Badge>
-          </div>
-          <div className="text-center space-y-2">
-            <div className="text-2xl font-bold text-secondary">
-              {playerDetections.length}
-            </div>
-            <Badge variant="outline" className="text-xs">
-              Cầu thủ
-            </Badge>
-          </div>
-          <div className="text-center space-y-2">
-            <div className="text-2xl font-bold text-accent">
-              {ballDetections.length}
-            </div>
-            <Badge variant="default" className="text-xs">
-              Bóng
-            </Badge>
-          </div>
-        </div>
-
-        {/* Detection Details */}
-        <div className="space-y-4">
-          <h4 className="font-semibold text-foreground">Chi tiết nhận diện</h4>
-          
-          <div className="space-y-3 max-h-40 overflow-y-auto">
-            {result.detections.map((detection, index) => (
-              <div
-                key={detection.id}
-                className="flex items-center justify-between p-3 bg-muted/50 rounded-lg"
+              <Button
+                onClick={onDownload}
+                variant="gradient"
+                size="sm"
               >
-                <div className="flex items-center space-x-3">
-                  <Badge
-                    variant={
-                      detection.type === 'field' ? 'secondary' :
-                      detection.type === 'player' ? 'outline' : 'default'
-                    }
-                    className="capitalize"
-                  >
-                    {detection.type === 'field' ? 'Sân' :
-                     detection.type === 'player' ? 'Cầu thủ' : 'Bóng'}
-                  </Badge>
-                  <span className="text-sm text-foreground">
-                    {detection.label}
-                  </span>
-                </div>
-                <div className="text-right">
-                  <div className="text-sm font-medium text-foreground">
-                    {(detection.confidence * 100).toFixed(1)}%
+                <Download className="h-4 w-4 mr-2" />
+                Tải xuống
+              </Button>
+            </div>
+          </CardHeader>
+          
+          <CardContent className="space-y-6">
+            {/* Media Display */}
+            <div className="relative bg-gradient-secondary rounded-lg overflow-hidden shadow-field">
+              {result.isVideo ? (
+                <div className="relative">
+                  <video
+                    ref={videoRef}
+                    src={result.processedUrl}
+                    className="w-full h-auto max-h-96 object-contain"
+                    controls={false}
+                    onPlay={() => setIsPlaying(true)}
+                    onPause={() => setIsPlaying(false)}
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Button
+                      variant="ghost"
+                      size="lg"
+                      className="bg-primary/20 hover:bg-primary/40 text-white border border-primary/50"
+                      onClick={handlePlayPause}
+                    >
+                      {isPlaying ? (
+                        <Pause className="h-8 w-8" />
+                      ) : (
+                        <Play className="h-8 w-8" />
+                      )}
+                    </Button>
                   </div>
-                  <div className="text-xs text-muted-foreground">
-                    Độ tin cậy
-                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
+              ) : (
+                <img
+                  src={result.processedUrl}
+                  alt="Processed result"
+                  className="w-full h-auto max-h-96 object-contain"
+                />
+              )}
+            </div>
 
-        {/* Processing Info */}
-        <div className="pt-4 border-t border-border">
-          <div className="flex justify-between items-center text-sm text-muted-foreground">
-            <span>Thời gian xử lý: {result.processingTime}ms</span>
-            <span>File: {result.originalFile.name}</span>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+            {/* Detection Statistics */}
+            <div className="grid grid-cols-3 gap-4">
+              <div className="text-center space-y-2 p-4 bg-primary/10 rounded-lg border border-primary/20">
+                <div className="text-2xl font-bold text-primary">
+                  {fieldDetections.length}
+                </div>
+                <Badge variant="secondary" className="text-xs bg-primary text-primary-foreground">
+                  Sân bóng
+                </Badge>
+              </div>
+              <div className="text-center space-y-2 p-4 bg-secondary/10 rounded-lg border border-secondary/20">
+                <div className="text-2xl font-bold text-secondary">
+                  {playerDetections.length}
+                </div>
+                <Badge variant="outline" className="text-xs border-secondary text-secondary">
+                  Cầu thủ
+                </Badge>
+              </div>
+              <div className="text-center space-y-2 p-4 bg-accent/10 rounded-lg border border-accent/20">
+                <div className="text-2xl font-bold text-accent">
+                  {ballDetections.length}
+                </div>
+                <Badge variant="default" className="text-xs bg-accent text-accent-foreground">
+                  Bóng
+                </Badge>
+              </div>
+            </div>
+
+            {/* Detection Details */}
+            <div className="space-y-4">
+              <h4 className="font-semibold text-foreground flex items-center gap-2">
+                <img 
+                  src={footballIcon} 
+                  alt="Football" 
+                  className="w-5 h-5 object-contain"
+                />
+                Chi tiết nhận diện
+              </h4>
+              
+              <div className="space-y-3 max-h-40 overflow-y-auto">
+                {result.detections.map((detection, index) => (
+                  <div
+                    key={detection.id}
+                    className="flex items-center justify-between p-3 bg-gradient-to-r from-primary/5 to-accent/5 rounded-lg border border-primary/20 hover:border-primary/40 transition-colors duration-200"
+                  >
+                    <div className="flex items-center space-x-3">
+                      <Badge
+                        variant={
+                          detection.type === 'field' ? 'secondary' :
+                          detection.type === 'player' ? 'outline' : 'default'
+                        }
+                        className={cn(
+                          "capitalize",
+                          detection.type === 'field' && "bg-primary text-primary-foreground",
+                          detection.type === 'player' && "border-secondary text-secondary",
+                          detection.type === 'ball' && "bg-accent text-accent-foreground"
+                        )}
+                      >
+                        {detection.type === 'field' ? 'Sân' :
+                         detection.type === 'player' ? 'Cầu thủ' : 'Bóng'}
+                      </Badge>
+                      <span className="text-sm text-foreground">
+                        {detection.label}
+                      </span>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-sm font-medium text-primary">
+                        {(detection.confidence * 100).toFixed(1)}%
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        Độ tin cậy
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Processing Info */}
+            <div className="pt-4 border-t border-primary/20">
+              <div className="flex justify-between items-center text-sm text-muted-foreground">
+                <span>Thời gian xử lý: <span className="text-primary font-medium">{result.processingTime}ms</span></span>
+                <span>File: <span className="text-primary font-medium">{result.originalFile.name}</span></span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Metrics Panel */}
+      <div className="lg:col-span-1">
+        <MetricsPanel
+          processingSpeed={result.processingTime}
+          map50Pose={mockMap50Pose}
+          map50Box={mockMap50Box}
+          avgConfidence={avgConfidence}
+          className="sticky top-4"
+        />
+      </div>
+    </div>
   );
 };
