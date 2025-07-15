@@ -167,42 +167,15 @@ const Index = () => {
                   <FileUpload
                     onFileUpload={handleFileUpload}
                     maxFiles={3}
+                    result={currentResult}
+                    isProcessing={isProcessing}
+                    onDownload={handleDownload}
+                    onStartProcessing={handleStartProcessing}
                   />
-                  
-                  {uploadedFiles.length > 0 && (
-                    <div className="flex justify-center">
-                      <Button
-                        onClick={handleStartProcessing}
-                        disabled={isProcessing}
-                        size="lg"
-                        variant="gradient"
-                        className="px-8"
-                      >
-                        {isProcessing ? (
-                          <>
-                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary-foreground mr-2"></div>
-                            Đang xử lý...
-                          </>
-                        ) : (
-                          <>
-                            <Brain className="h-4 w-4 mr-2" />
-                            Bắt đầu nhận diện AI
-                          </>
-                        )}
-                      </Button>
-                    </div>
-                  )}
                 </div>
               </CardContent>
             </Card>
 
-            {/* Results Section */}
-            <ResultsPanel
-              result={currentResult}
-              isProcessing={isProcessing}
-              onDownload={handleDownload}
-              className="shadow-field"
-            />
           </div>
 
           {/* Evaluation Sidebar - moved to bottom on mobile */}
