@@ -6,16 +6,12 @@ import { cn } from '@/lib/utils';
 
 interface MetricsPanelProps {
   processingSpeed?: number; // ms
-  map50Pose?: number; // 0-1
-  map50Box?: number; // 0-1
   avgConfidence?: number; // 0-1
   className?: string;
 }
 
 export const MetricsPanel: React.FC<MetricsPanelProps> = ({
   processingSpeed = 0,
-  map50Pose = 0,
-  map50Box = 0,
   avgConfidence = 0,
   className
 }) => {
@@ -27,22 +23,6 @@ export const MetricsPanel: React.FC<MetricsPanelProps> = ({
       icon: Zap,
       color: 'text-accent',
       bgColor: 'bg-accent/10'
-    },
-    {
-      title: 'mAP50 Pose',
-      value: `${(map50Pose * 100).toFixed(1)}%`,
-      description: 'Độ chính xác nhận diện tư thế',
-      icon: Activity,
-      color: 'text-primary',
-      bgColor: 'bg-primary/10'
-    },
-    {
-      title: 'mAP50 Box',
-      value: `${(map50Box * 100).toFixed(1)}%`,
-      description: 'Độ chính xác khung nhận diện',
-      icon: Target,
-      color: 'text-secondary',
-      bgColor: 'bg-secondary/10'
     },
     {
       title: 'Độ tin cậy TB',

@@ -18,9 +18,12 @@ export interface DetectionResult {
 export interface ProcessedFile {
   originalFile: File;
   processedUrl: string;
-  detections: DetectionResult[];
+  downloadUrl?: string;
+  detections: any[];
   processingTime: number;
   isVideo: boolean;
+  counts: Record<string, number>;
+  confidenceAvg: number | null;
 }
 
 interface ResultsPanelProps {
@@ -97,14 +100,10 @@ export const ResultsPanel: React.FC<ResultsPanelProps> = ({
     );
   }
 
-  const fieldDetections = result.detections.filter(d => d.type === 'field');
-  const playerDetections = result.detections.filter(d => d.type === 'player');
-  const ballDetections = result.detections.filter(d => d.type === 'ball');
-
-  // Calculate metrics
-  const avgConfidence = result.detections.reduce((sum, d) => sum + d.confidence, 0) / result.detections.length;
-  const mockMap50Pose = 0.85 + (Math.random() * 0.10); // Mock data
-  const mockMap50Box = 0.82 + (Math.random() * 0.12); // Mock data
+  const fieldCount = result.counts?.field ?? 0;
+  const playerCount = result.counts?.player ?? 0;
+  const ballCount = result.counts?.ball ?? 0;
+  const avgConfidence = result.confidenceAvg ?? 0;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -169,33 +168,33 @@ export const ResultsPanel: React.FC<ResultsPanelProps> = ({
               )}
             </div>
 
-            {/* Detection Statistics */}
-            <div className="grid grid-cols-3 gap-4">
-              <div className="text-center space-y-2 p-4 bg-primary/10 rounded-lg border border-primary/20">
-                <div className="text-2xl font-bold text-primary">
-                  {fieldDetections.length}
-                </div>
-                <Badge variant="secondary" className="text-xs bg-primary text-primary-foreground">
-                  Sân bóng
-                </Badge>
-              </div>
-              <div className="text-center space-y-2 p-4 bg-secondary/10 rounded-lg border border-secondary/20">
-                <div className="text-2xl font-bold text-secondary">
-                  {playerDetections.length}
-                </div>
-                <Badge variant="outline" className="text-xs border-secondary text-secondary">
-                  Cầu thủ
-                </Badge>
-              </div>
-              <div className="text-center space-y-2 p-4 bg-accent/10 rounded-lg border border-accent/20">
-                <div className="text-2xl font-bold text-accent">
-                  {ballDetections.length}
-                </div>
-                <Badge variant="default" className="text-xs bg-accent text-accent-foreground">
-                  Bóng
-                </Badge>
-              </div>
-            </div>
+            {/* Detection Statistics */}  
+<div className="grid grid-cols-2 gap-4">
+  {/* <div className="text-center space-y-2 p-4 bg-primary/10 rounded-lg border border-primary/20">
+    <div className="text-2xl font-bold text-primary">
+      {result.counts.field ?? 0}
+    </div>
+    <Badge variant="secondary" className="text-xs bg-primary text-primary-foreground">
+      Sân bóng
+    </Badge>
+  </div> */}
+  <div className="text-center space-y-2 p-4 bg-secondary/10 rounded-lg border border-secondary/20">
+    <div className="text-2xl font-bold text-secondary">
+      {result.counts.player ?? 0}
+    </div>
+    <Badge variant="outline" className="text-xs border-secondary text-secondary">
+      Cầu thủ
+    </Badge>
+  </div>
+  <div className="text-center space-y-2 p-4 bg-accent/10 rounded-lg border border-accent/20">
+    <div className="text-2xl font-bold text-accent">
+      {result.counts.ball ?? 0}
+    </div>
+    <Badge variant="default" className="text-xs bg-accent text-accent-foreground">
+      Bóng
+    </Badge>
+  </div>
+</div>
 
             {/* Detection Details */}
             <div className="space-y-4">
@@ -262,8 +261,6 @@ export const ResultsPanel: React.FC<ResultsPanelProps> = ({
       <div className="lg:col-span-1">
         <MetricsPanel
           processingSpeed={result.processingTime}
-          map50Pose={mockMap50Pose}
-          map50Box={mockMap50Box}
           avgConfidence={avgConfidence}
           className="sticky top-4"
         />

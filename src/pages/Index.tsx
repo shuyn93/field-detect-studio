@@ -14,52 +14,36 @@ const Index = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const { toast } = useToast();
 
-  // Mock AI processing function
   const processFile = async (file: UploadedFile): Promise<ProcessedFile> => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        // Mock detection results
-        const mockDetections = [
-          {
-            id: '1',
-            type: 'field' as const,
-            confidence: 0.95,
-            bbox: [100, 50, 300, 200] as [number, number, number, number],
-            label: 'Sân bóng đá'
-          },
-          {
-            id: '2',
-            type: 'player' as const,
-            confidence: 0.88,
-            bbox: [150, 100, 50, 120] as [number, number, number, number],
-            label: 'Cầu thủ #1'
-          },
-          {
-            id: '3',
-            type: 'player' as const,
-            confidence: 0.92,
-            bbox: [250, 120, 45, 110] as [number, number, number, number],
-            label: 'Cầu thủ #2'
-          },
-          {
-            id: '4',
-            type: 'ball' as const,
-            confidence: 0.76,
-            bbox: [200, 140, 15, 15] as [number, number, number, number],
-            label: 'Bóng đá'
-          }
-        ];
+  const formData = new FormData();
+  formData.append("file", file.file);
 
-        resolve({
-          originalFile: file.file,
-          processedUrl: file.preview, // In real app, this would be the processed image/video
-          detections: mockDetections,
-          processingTime: Math.floor(Math.random() * 2000) + 1000,
-          isVideo: file.type === 'video'
-        });
-      }, 3000); // Simulate processing time
-    });
+  const response = await fetch("http://localhost:8000/process", {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new Error("Processing failed");
+  }
+
+  const data = await response.json();
+  const processedUrl = `http://localhost:8000${data.output_url}`;
+  const downloadUrl = `http://localhost:8000${data.download_url}`;  // ✅ Thêm dòng này
+
+  return {
+    originalFile: file.file,
+    processedUrl,
+    downloadUrl, // ✅ Gán vào đây
+    detections: [], // Nếu chưa hỗ trợ bbox
+    processingTime: data.processing_time || 0,
+    isVideo: file.type === "video",
+    counts: data.counts || {},
+    confidenceAvg: data.confidence_avg ?? null,
   };
+};
+
+
 
   const handleFileUpload = (files: UploadedFile[]) => {
     setUploadedFiles(files);
@@ -99,14 +83,23 @@ const Index = () => {
   };
 
   const handleDownload = () => {
-    if (currentResult) {
-      // In real app, this would download the processed file
-      toast({
-        title: "Tải xuống",
-        description: "Đang chuẩn bị file để tải xuống...",
-      });
-    }
-  };
+  if (!currentResult) return;
+
+  const downloadUrl = currentResult.downloadUrl || currentResult.processedUrl;
+
+  const link = document.createElement('a');
+  link.href = downloadUrl;
+
+  const baseName = currentResult.originalFile.name.replace(/\.[^/.]+$/, '');
+  const extension = currentResult.isVideo ? '.mp4' : '.jpg';
+  link.download = `${baseName}_processed${extension}`;
+
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+
 
   const handleEvaluation = (evaluation: any) => {
     console.log('Evaluation submitted:', evaluation);
